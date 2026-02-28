@@ -68,7 +68,6 @@ export const useScanner = ({ cart, onAddToCart, onQuantityChange }) => {
         setSelectedItem(null);
         lastScannedRef.current = null;
         isProcessingRef.current = false;
-        if (resumeScan) setIsScanning(true);
       }, 1200);
     } catch {
       setScanError("Item not found");
