@@ -6,7 +6,6 @@ export const useScanner = ({ cart, onAddToCart, onQuantityChange }) => {
   const videoRef = useRef(null);
   const readerRef = useRef(null);
   const controlsRef = useRef(null);
-  const lastScannedRef = useRef(null);
   const scanTimeoutRef = useRef(null);
   const isProcessingRef = useRef(false);
 
@@ -58,6 +57,10 @@ export const useScanner = ({ cart, onAddToCart, onQuantityChange }) => {
         setBarcodeInput("");
         setNameInput("");
 
+        if (controlsRef.current) {
+          controlsRef.current.stop();
+        }
+
         if (scanTimeoutRef.current) {
           clearTimeout(scanTimeoutRef.current);
         }
@@ -65,15 +68,32 @@ export const useScanner = ({ cart, onAddToCart, onQuantityChange }) => {
         scanTimeoutRef.current = setTimeout(() => {
           setSuccessItem(null);
           setSelectedItem(null);
-          lastScannedRef.current = null;
           isProcessingRef.current = false;
+
+          if (isScanning && readerRef.current) {
+            readerRef.current.decodeFromVideoDevice(
+              null,
+              videoRef.current,
+              (result, error, controls) => {
+                controlsRef.current = controls;
+
+                if (!result) return;
+
+                const code = result.getText();
+
+                if (!isProcessingRef.current && !successItem) {
+                  fetchProduct(code);
+                }
+              }
+            );
+          }
         }, 1200);
       } catch {
         setScanError("Item not found");
         isProcessingRef.current = false;
       }
     },
-    [cart, onAddToCart, onQuantityChange, successItem]
+    [cart, onAddToCart, onQuantityChange, successItem, isScanning]
   );
 
   useEffect(() => {
@@ -99,13 +119,7 @@ export const useScanner = ({ cart, onAddToCart, onQuantityChange }) => {
 
         const code = result.getText();
 
-        if (
-          code &&
-          code !== lastScannedRef.current &&
-          !isProcessingRef.current &&
-          !successItem
-        ) {
-          lastScannedRef.current = code;
+        if (!isProcessingRef.current && !successItem) {
           fetchProduct(code);
         }
       })
