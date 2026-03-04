@@ -147,3 +147,5 @@ export const useScanner = ({ cart, onAddToCart, onQuantityChange }) => {
     setScanError,
   };
 };
+
+//sds
