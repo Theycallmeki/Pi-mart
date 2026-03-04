@@ -27,7 +27,7 @@ export const useScanner = ({ cart, onAddToCart, onQuantityChange }) => {
 
   const fetchProduct = useCallback(
     async (barcode) => {
-      if (!barcode || isProcessingRef.current) return;
+      if (!barcode || isProcessingRef.current || successItem) return;
 
       isProcessingRef.current = true;
 
@@ -58,10 +58,6 @@ export const useScanner = ({ cart, onAddToCart, onQuantityChange }) => {
         setBarcodeInput("");
         setNameInput("");
 
-        if (controlsRef.current) {
-          controlsRef.current.stop();
-        }
-
         if (scanTimeoutRef.current) {
           clearTimeout(scanTimeoutRef.current);
         }
@@ -71,33 +67,13 @@ export const useScanner = ({ cart, onAddToCart, onQuantityChange }) => {
           setSelectedItem(null);
           lastScannedRef.current = null;
           isProcessingRef.current = false;
-
-          if (isScanning && readerRef.current) {
-            readerRef.current
-              .decodeFromVideoDevice(null, videoRef.current, (result, error, controls) => {
-                controlsRef.current = controls;
-
-                if (!result) return;
-
-                const code = result.getText();
-
-                if (
-                  code &&
-                  code !== lastScannedRef.current &&
-                  !isProcessingRef.current
-                ) {
-                  lastScannedRef.current = code;
-                  fetchProduct(code);
-                }
-              });
-          }
         }, 1200);
       } catch {
         setScanError("Item not found");
         isProcessingRef.current = false;
       }
     },
-    [cart, onAddToCart, onQuantityChange, isScanning]
+    [cart, onAddToCart, onQuantityChange, successItem]
   );
 
   useEffect(() => {
@@ -126,7 +102,8 @@ export const useScanner = ({ cart, onAddToCart, onQuantityChange }) => {
         if (
           code &&
           code !== lastScannedRef.current &&
-          !isProcessingRef.current
+          !isProcessingRef.current &&
+          !successItem
         ) {
           lastScannedRef.current = code;
           fetchProduct(code);
@@ -145,7 +122,7 @@ export const useScanner = ({ cart, onAddToCart, onQuantityChange }) => {
         clearTimeout(scanTimeoutRef.current);
       }
     };
-  }, [isScanning, fetchProduct]);
+  }, [isScanning, fetchProduct, successItem]);
 
   const suggestions = useMemo(() => {
     if (!nameInput) return [];
