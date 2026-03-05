@@ -217,3 +217,4 @@ async function loadSales() {
   font-size: 0.9rem;
 }
 </style>
+<!-- fix ni jehu -->
