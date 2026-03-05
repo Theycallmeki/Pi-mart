@@ -25,7 +25,7 @@ export const useScanner = ({ cart, onAddToCart, onQuantityChange }) => {
   }, []);
 
   const fetchProduct = useCallback(
-    async (barcode) => {
+    async (barcode, fromCamera = false) => {
       if (!barcode || scanLockRef.current) return;
 
       scanLockRef.current = true;
@@ -37,8 +37,11 @@ export const useScanner = ({ cart, onAddToCart, onQuantityChange }) => {
 
         if (product.quantity === 0) {
           setScanError(`${product.name} is out of stock`);
-          scanLockRef.current = false;
-          setIsLocked(false);
+          setTimeout(() => {
+            setScanError(null);
+            scanLockRef.current = false;
+            setIsLocked(false);
+          }, 2000);
           return;
         }
 
@@ -47,8 +50,11 @@ export const useScanner = ({ cart, onAddToCart, onQuantityChange }) => {
 
         if (cartQty >= product.quantity) {
           setScanError(`Not enough stock for ${product.name}`);
-          scanLockRef.current = false;
-          setIsLocked(false);
+          setTimeout(() => {
+            setScanError(null);
+            scanLockRef.current = false;
+            setIsLocked(false);
+          }, 2000);
           return;
         }
 
@@ -60,16 +66,26 @@ export const useScanner = ({ cart, onAddToCart, onQuantityChange }) => {
         setBarcodeInput("");
         setNameInput("");
 
+        if (fromCamera) {
+          setIsScanning(false);
+        }
+
         setTimeout(() => {
           setSuccessItem(null);
           setSelectedItem(null);
           scanLockRef.current = false;
           setIsLocked(false);
+          if (fromCamera) {
+            setIsScanning(true);
+          }
         }, 1200);
       } catch {
         setScanError("Item not found");
-        scanLockRef.current = false;
-        setIsLocked(false);
+        setTimeout(() => {
+          setScanError(null);
+          scanLockRef.current = false;
+          setIsLocked(false);
+        }, 2000);
       }
     },
     [cart, onAddToCart, onQuantityChange]
@@ -95,7 +111,7 @@ export const useScanner = ({ cart, onAddToCart, onQuantityChange }) => {
       const code = result.getText();
 
       if (!scanLockRef.current) {
-        fetchProduct(code);
+        fetchProduct(code, true);
       }
     });
 

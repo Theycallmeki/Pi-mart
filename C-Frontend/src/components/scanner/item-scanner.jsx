@@ -65,9 +65,9 @@ const Scanner = ({ cart, setCart }) => {
     successItem,
     fetchProduct,
     suggestions,
-    selectedItem, 
+    selectedItem,
     setSelectedItem,
-    scanError, 
+    scanError,
     setScanError
   } = useScanner({
     cart,
@@ -121,37 +121,46 @@ const Scanner = ({ cart, setCart }) => {
                   }}
                   placeholder="Search product name/barcode"
                 />
-            
-              {nameInput && suggestions.length > 0 && (
-              <div className="suggestions">
-                {suggestions.map((item) => (
-                  <div
-                    key={item.barcode}
-                    className="suggestion-item"
-                    onClick={() => {
-                      setBarcodeInput(item.barcode);
-                      setSelectedItem(item);        
-                      setNameInput("");  
-                    }}
-                  >
-                    {item.name}
+
+                {nameInput && suggestions.length > 0 && (
+                  <div className="suggestions">
+                    {suggestions.map((item) => (
+                      <div
+                        key={item.barcode}
+                        className="suggestion-item"
+                        onClick={() => {
+                          setBarcodeInput(item.barcode);
+                          setSelectedItem(item);
+                          setNameInput("");
+                        }}
+                      >
+                        {item.name}
+                      </div>
+                    ))}
                   </div>
-                ))}
+                )}
               </div>
-            )}
-          </div>   
 
               <PrimaryButton onClick={() => fetchProduct(barcodeInput)}>
                 Add
               </PrimaryButton>
               <p className="scanner-actions separation">or</p>
               <button
-                  className="camera-icon-btn"
-                  onClick={() => setIsScanning((s) => !s)}
-                  type="button"
-                >
-                <FontAwesomeIcon icon={faCamera} />
-                  Scan
+                className="camera-icon-btn"
+                onClick={() => setIsScanning((s) => !s)}
+                type="button"
+              >
+                {isScanning ? (
+                  <>
+                    <span>✕</span>
+                    Close
+                  </>
+                ) : (
+                  <>
+                    <FontAwesomeIcon icon={faCamera} />
+                    Scan
+                  </>
+                )}
               </button>
             </div>
 
