@@ -17,6 +17,66 @@ class InteractionDataset(Dataset):
         return len(self.data)
     def __getitem__(self, idx):
         return self.data[idx]
+    
+def generate_recommendations_for_user(user_id):
+    if state.model is None or not state.user_map or not state.item_map:
+        return False
+    
+    interactions = build_interactions()
+    if user_id not in interactions:
+        return False
+    
+    if user_id not in state.user_map:
+        state.user_map[user_id] = len(state.user_map)
+        
+        old_model = state.model
+        n_users = len(state.user_map)
+        n_items = len(state.item_map)
+        new_model = MFModel(n_users, n_items)
+        
+        new_model.user_emb.weight.data[:old_model.user_emb.num_embeddings] = \
+            old_model.user_emb.weight.data
+        new_model.item_emb.weight.data = old_model.item_emb.weight.data.clone()
+        
+        state.model = new_model
+    
+    uidx = state.user_map[user_id]
+    user_purchases = interactions[user_id]
+
+    with torch.no_grad():
+        scores = {}
+        
+        for purchased_item_id in user_purchases.keys():
+            if purchased_item_id not in state.item_map:
+                continue
+            
+            purchased_iidx = state.item_map[purchased_item_id]
+            purchased_emb = state.model.item_emb.weight[purchased_iidx]
+            
+            for iid, iidx in state.item_map.items():
+                if iid == purchased_item_id:
+                    continue
+                
+                item_emb = state.model.item_emb.weight[iidx]
+                similarity = (purchased_emb * item_emb).sum().item()
+                
+                if iid not in scores:
+                    scores[iid] = 0
+                scores[iid] += similarity
+    
+        sorted_scores = sorted(scores.items(), key=lambda x: x[1], reverse=True)[:TOP_N]
+        state.score_matrix[user_id] = dict(sorted_scores)
+    
+    AIRecommendation.query.filter_by(user_id=user_id).delete()
+    for iid, score in state.score_matrix[user_id].items():
+        db.session.add(AIRecommendation(
+            user_id=user_id,
+            item_id=iid,
+            score=score
+        ))
+    db.session.commit()
+    
+    return True
 
 def retrain_model(epochs=20):
     interactions = build_interactions()
