@@ -121,7 +121,7 @@ def retrain_model(epochs=20):
     
     logs.append(f"total interaction points: {len(data)}")
     
-    torch.manual_seed(42)
+    # torch.manual_seed(42)
 
     loader = DataLoader(
         InteractionDataset(data),
