@@ -15,12 +15,12 @@ import Recommendations from "../views/Recommendations.vue"
 import WalletTopUp from "../views/WalletTopUp.vue"
 import GrossSales from "../views/GrossSales.vue"
 
-/* ✅ NEW METRICS PAGES */
+
 import ForecastMetrics from "../views/ForecastMetrics.vue"
 import StockoutRiskMetrics from "../views/StockoutRiskMetrics.vue"
 import ItemMovementMetrics from "../views/ItemMovementMetrics.vue"
 
-/* ---------------- ROUTES ---------------- */
+
 
 const routes = [
   { path: "/login", component: Login, meta: { public: true } },
@@ -32,7 +32,7 @@ const routes = [
   { path: "/transactions", component: TransactionHistory },
   { path: "/wallet/top-up", component: WalletTopUp },
 
-  // 🔹 ANALYTICS
+ 
   { path: "/analytics/demand", component: DemandForecast },
   { path: "/analytics/movement", component: ItemMovement },
   { path: "/analytics/stockout", component: StockoutRisk },
