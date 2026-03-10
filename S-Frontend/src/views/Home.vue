@@ -12,9 +12,9 @@ const go = (path) => router.push(path)
     <h1 class="title">Welcome to G-Friends</h1>
     <p class="subtitle">Pi-Mart Smart Self-Service Dashboard</p>
 
-    <!-- BENTO GRID -->
+ 
     <div class="bento">
-      <!-- POS (BIG LEFT) -->
+    
       <Card class="bento-card pos gradient-orange">
         <template #title>POS</template>
         <template #content>
@@ -25,7 +25,7 @@ const go = (path) => router.push(path)
         </template>
       </Card>
 
-      <!-- INVENTORY -->
+      
       <Card class="bento-card small gradient-blue">
         <template #title>Inventory</template>
         <template #content>
@@ -36,7 +36,7 @@ const go = (path) => router.push(path)
         </template>
       </Card>
 
-      <!-- TRANSACTIONS -->
+
       <Card class="bento-card small gradient-purple">
         <template #title>Transactions</template>
         <template #content>
@@ -47,7 +47,7 @@ const go = (path) => router.push(path)
         </template>
       </Card>
 
-      <!-- DEMAND FORECAST -->
+      
       <Card class="bento-card wide gradient-green">
         <template #title>Demand Forecast</template>
         <template #content>
@@ -58,7 +58,7 @@ const go = (path) => router.push(path)
         </template>
       </Card>
 
-      <!-- ITEM MOVEMENT -->
+
       <Card class="bento-card small gradient-cyan">
         <template #title>Item Movement</template>
         <template #content>
@@ -69,7 +69,7 @@ const go = (path) => router.push(path)
         </template>
       </Card>
 
-      <!-- PAYMENT -->
+
       <Card class="bento-card small gradient-indigo">
         <template #title>Payment</template>
         <template #content>
@@ -91,7 +91,6 @@ const go = (path) => router.push(path)
         </template>
       </Card>
 
-      <!-- RECOMMENDATIONS -->
       <Card class="bento-card small gradient-gold">
         <template #title>Recommendations</template>
         <template #content>
@@ -102,7 +101,7 @@ const go = (path) => router.push(path)
         </template>
       </Card>
 
-      <!-- STOCKOUT RISK (FULL WIDTH BOTTOM) -->
+  
       <Card class="bento-card stockout gradient-red">
         <template #title>Stockout Risk</template>
         <template #content>
@@ -119,7 +118,6 @@ const go = (path) => router.push(path)
       </Card>
     </div>
 
-    <!-- FOOTER -->
     <footer class="footer">
       © 2026 Holy Angel University — Pi-Mart Smart Self-Service Grocery System.  
       Developed for academic and research purposes.
@@ -128,7 +126,7 @@ const go = (path) => router.push(path)
 </template>
 
 <style scoped>
-/* PAGE */
+
 .home {
   padding: 24px;
   min-height: calc(100vh - 40px);
@@ -137,7 +135,7 @@ const go = (path) => router.push(path)
   background: transparent;
 }
 
-/* HEADER */
+
 .title {
   color: #ffffff;
   font-size: 1.6rem;
@@ -148,7 +146,7 @@ const go = (path) => router.push(path)
   margin-bottom: 20px;
 }
 
-/* BENTO GRID */
+
 .bento {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -157,7 +155,7 @@ const go = (path) => router.push(path)
   flex: 1;
 }
 
-/* CARD BASE */
+
 .bento-card {
   border-radius: 18px;
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -175,7 +173,7 @@ const go = (path) => router.push(path)
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
 }
 
-/* SIZES */
+
 .pos {
   grid-column: span 2;
   grid-row: span 2;
@@ -189,12 +187,12 @@ const go = (path) => router.push(path)
   grid-column: span 1;
 }
 
-/* 🔴 STOCKOUT FULL WIDTH */
+
 .stockout {
   grid-column: span 4;
 }
 
-/* GRADIENTS */
+
 .gradient-orange { background: linear-gradient(135deg, #ff7a18, #ffb347); }
 .gradient-blue   { background: linear-gradient(135deg, #3b82f6, #60a5fa); }
 .gradient-purple{ background: linear-gradient(135deg, #8b5cf6, #a78bfa); }
@@ -205,7 +203,7 @@ const go = (path) => router.push(path)
 .gradient-teal  { background: linear-gradient(135deg, #0f766e, #5eead4); }
 .gradient-gold  { background: linear-gradient(135deg, #ca8a04, #fde047); }
 
-/* PRIMEVUE TEXT */
+
 :deep(.p-card-title) {
   font-size: 1.1rem;
   font-weight: 600;
@@ -215,7 +213,7 @@ const go = (path) => router.push(path)
   color: rgba(255, 255, 255, 0.85);
 }
 
-/* FOOTER */
+
 .footer {
   margin-top: 32px;
   padding-top: 16px;
@@ -225,7 +223,7 @@ const go = (path) => router.push(path)
   color: #9ca3af;
 }
 
-/* RESPONSIVE */
+
 @media (max-width: 1024px) {
   .bento {
     grid-template-columns: repeat(2, 1fr);
