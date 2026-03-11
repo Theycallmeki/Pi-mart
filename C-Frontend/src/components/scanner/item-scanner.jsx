@@ -176,7 +176,7 @@ const Scanner = ({ cart, setCart }) => {
           </Section>
         </div>
 
-        {/* RIGHT COLUMN */}
+        
         <div className="scanner-column">
           <Section>
             <h3 style={{ color: "#000" }}>
