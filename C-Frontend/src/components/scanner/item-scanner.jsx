@@ -104,7 +104,7 @@ const Scanner = ({ cart, setCart }) => {
       </h2>
 
       <div className="scanner-layout">
-        {/* LEFT COLUMN */}
+      
         <div className="scanner-column">
           <Section>
             {scanError && <p className="scan-error">{scanError}</p>}
