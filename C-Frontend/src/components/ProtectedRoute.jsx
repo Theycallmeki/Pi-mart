@@ -14,7 +14,7 @@ export default function ProtectedRoute({ children }) {
       .finally(() => setChecking(false));
   }, []);
 
-  if (checking) return null; // or spinner
+  if (checking) return null; 
   if (!allowed) return <Navigate to="/login" replace />;
 
   return children;
