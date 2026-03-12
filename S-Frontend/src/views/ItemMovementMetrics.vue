@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from "vue"
 import { useRouter } from "vue-router"
-import api from "../services/api"   // ✅ USE AXIOS INSTANCE
+import api from "../services/api"   
 
 const router = useRouter()
 
