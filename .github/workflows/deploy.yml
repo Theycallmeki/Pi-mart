@@ -15,32 +15,10 @@ jobs:
 
       - name: Deploy to Droplet
         uses: appleboy/ssh-action@v1.0.0
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          SMTP_USER: ${{ secrets.SMTP_USER }}
-          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
-          SMTP_FROM_EMAIL: ${{ secrets.SMTP_FROM_EMAIL }}
-          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
-          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-          GOOGLE_REDIRECT_URI: ${{ secrets.GOOGLE_REDIRECT_URI }}
-          GH_CLIENT_ID: ${{ secrets.GH_CLIENT_ID }}
-          GH_CLIENT_SECRET: ${{ secrets.GH_CLIENT_SECRET }}
-          GH_REDIRECT_URI: ${{ secrets.GH_REDIRECT_URI }}
-          FRONTEND_URL: ${{ secrets.FRONTEND_URL }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
-          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
-          SMTP_PORT: ${{ secrets.SMTP_PORT }}
-          VERCEL_EMAIL_URL: ${{ secrets.VERCEL_EMAIL_URL }}
-          EMAIL_API_KEY: ${{ secrets.EMAIL_API_KEY }}
         with:
           host: ${{ secrets.SERVER_IP }}
           username: root
           key: ${{ secrets.SSH_KEY }}
-          envs: DATABASE_URL,SECRET_KEY,SMTP_USER,SMTP_PASSWORD,SMTP_FROM_EMAIL,SMTP_PORT,GOOGLE_CLIENT_ID,GOOGLE_CLIENT_SECRET,GOOGLE_REDIRECT_URI,GH_CLIENT_ID,GH_CLIENT_SECRET,GH_REDIRECT_URI,FRONTEND_URL,AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY,AWS_REGION,AWS_S3_BUCKET,RESEND_API_KEY,VERCEL_EMAIL_URL,EMAIL_API_KEY
           script: |
             # 1. Navigate to the project folder
             cd /app || { echo "Directory /app not found"; exit 1; }
