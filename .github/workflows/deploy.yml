@@ -1,0 +1,94 @@
+name: Deploy
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - 'Backend/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Deploy to Droplet
+        uses: appleboy/ssh-action@v1.0.0
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          SMTP_FROM_EMAIL: ${{ secrets.SMTP_FROM_EMAIL }}
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          GOOGLE_REDIRECT_URI: ${{ secrets.GOOGLE_REDIRECT_URI }}
+          GH_CLIENT_ID: ${{ secrets.GH_CLIENT_ID }}
+          GH_CLIENT_SECRET: ${{ secrets.GH_CLIENT_SECRET }}
+          GH_REDIRECT_URI: ${{ secrets.GH_REDIRECT_URI }}
+          FRONTEND_URL: ${{ secrets.FRONTEND_URL }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          VERCEL_EMAIL_URL: ${{ secrets.VERCEL_EMAIL_URL }}
+          EMAIL_API_KEY: ${{ secrets.EMAIL_API_KEY }}
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: root
+          key: ${{ secrets.SSH_KEY }}
+          envs: DATABASE_URL,SECRET_KEY,SMTP_USER,SMTP_PASSWORD,SMTP_FROM_EMAIL,SMTP_PORT,GOOGLE_CLIENT_ID,GOOGLE_CLIENT_SECRET,GOOGLE_REDIRECT_URI,GH_CLIENT_ID,GH_CLIENT_SECRET,GH_REDIRECT_URI,FRONTEND_URL,AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY,AWS_REGION,AWS_S3_BUCKET,RESEND_API_KEY,VERCEL_EMAIL_URL,EMAIL_API_KEY
+          script: |
+            # 1. Navigate to the project folder
+            cd /app || { echo "Directory /app not found"; exit 1; }
+            
+            # 2. Pull the latest code
+            git pull origin main || { echo "Git pull failed"; exit 1; }
+            
+            # 3. Recreate the Backend .env file (Indented and then cleaned)
+            # Note: Using 'Backend' to match the repository directory case
+            cat <<EOF | sed 's/^[[:space:]]*//' > /app/Backend/.env
+            DATABASE_URL=$DATABASE_URL
+            SECRET_KEY=$SECRET_KEY
+            ALGORITHM=HS256
+            SMTP_HOST=smtp.gmail.com
+            SMTP_PORT=${SMTP_PORT:-587}
+            SMTP_USER=$SMTP_USER
+            SMTP_PASSWORD=$SMTP_PASSWORD
+            SMTP_FROM_EMAIL=$SMTP_FROM_EMAIL
+            GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID
+            GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET
+            GOOGLE_REDIRECT_URI=$GOOGLE_REDIRECT_URI
+            GH_CLIENT_ID=$GH_CLIENT_ID
+            GH_CLIENT_SECRET=$GH_CLIENT_SECRET
+            GH_REDIRECT_URI=$GH_REDIRECT_URI
+            FRONTEND_URL=$FRONTEND_URL
+            ALLOWED_ORIGINS=$FRONTEND_URL,https://kasaup.vercel.app
+            AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+            AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+            AWS_REGION=$AWS_REGION
+            AWS_S3_BUCKET=$AWS_S3_BUCKET
+            RESEND_API_KEY=$RESEND_API_KEY
+            VERCEL_EMAIL_URL=$VERCEL_EMAIL_URL
+            EMAIL_API_KEY=$EMAIL_API_KEY
+            EOF
+            
+            # 5. Clean restart services
+            # Assuming docker-compose.yml is in the Backend folder or root /app
+            # If it's inside Backend, we should cd Backend
+            if [ -f "/app/Backend/docker-compose.yml" ]; then
+              cd /app/Backend
+            fi
+            
+            docker-compose down
+            docker-compose up -d --build
+            
+            # 6. Verify status
+            echo "--- Container Status ---"
+            docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+            
+            # 7. Cleanup old images
+            docker system prune -f
