@@ -10,7 +10,7 @@ from urls import register_routes
 app = Flask(__name__)
 
 # --------------------------------------------------
-# SECURITY / COOKIE CONFIG
+
 # --------------------------------------------------
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 
