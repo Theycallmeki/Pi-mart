@@ -21,7 +21,7 @@ app.config["SESSION_COOKIE_SECURE"] = True
 
 
 # --------------------------------------------------
-# CORS (PRODUCTION SAFE FOR COOKIE AUTH)
+
 # --------------------------------------------------
 CORS(
     app,
